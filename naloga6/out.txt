@@ -1,0 +1,2 @@
+AND,AND,AND,a,NOT,OR,b,a,OR,T,b,NOT,c
+6
