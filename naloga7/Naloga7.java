@@ -85,8 +85,8 @@ public class Naloga7 {
         HashSet<Integer> smoZeObiskaliLinijo = new HashSet<>();
 
         for (Linija linija : linije) {
-            linija.izpisi();
-            System.out.println();
+            // linija.izpisi();
+            // System.out.println();
             if (linija.postaje.contains(idZacetka)) {
                 q.add(new QueueEl(linija.idLinije, 0));
             }
@@ -107,8 +107,8 @@ public class Naloga7 {
             }
 
         }
-        System.out.println(tempQel.idLinije);
-        System.out.println(tempQel.korak);
+        System.out.println("konca linija " + tempQel.idLinije);
+        System.out.println("stPrestopanj: " + tempQel.korak);
 
         p.close();
         tok.close();
