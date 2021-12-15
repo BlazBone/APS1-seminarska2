@@ -26,7 +26,13 @@ public class Naloga6 {
 
     public static boolean odvecniParOklepajev(String izraz2) {
         char[] izraz = izraz2.toCharArray();
-
+        if (izraz.length == 0) {
+            // System.out.println("HWJJJJJJJJ");
+            // System.out.println(izraz.toString());
+            // System.out.println(izraz2);
+            // System.out.println(Arrays.toString(izraz));
+            return false;
+        }
         if (izraz[0] == '(' && izraz[izraz.length - 1] == ')') {
             int stPrvih = 0;
             int stDrugih = 0;
@@ -86,7 +92,9 @@ public class Naloga6 {
     }
 
     public static void izpisi(String izraz) {
-
+        // if (izraz.length() == 0) {
+        // // System.out.println("WE HAVE A PROBLEM");
+        // }
         while (odvecniParOklepajev(izraz)) {
             izraz = izraz.substring(1, izraz.length() - 1);
         }
@@ -100,24 +108,53 @@ public class Naloga6 {
 
             // razdelimo na dva dela in poklicemo rekurzivno
             // levidel
+            if (izraz.substring(0, polozaj).length() == 0) {
+                // System.out.println("PROBLEM PRI levemu");
+                // System.out.println(izraz);
+                // System.out.println();
+            }
             left++;
             izpisi(izraz.substring(0, polozaj));
             left--;
             // desnidel
-            right++;
-            izpisi(izraz.substring(polozaj + 1));
-            right--;
+            if (izraz.substring(polozaj + 1).length() == 0) {
+                // System.out.println("PROBLEM PRI DESNEMU");
+                // System.out.println(izraz);
+                // System.out.println();
+            } else {
+
+                right++;
+                izpisi(izraz.substring(polozaj + 1));
+                right--;
+            }
 
             return;
         } else if (polozaj == 0) {
             natisniOperand(izraz.charAt(polozaj));
 
             // ce je polozaj 0 imamo samo desni del
-            right++;
-            izpisi(izraz.substring(polozaj + 1));
+            if (izraz.substring(polozaj + 1).length() == 0) {
+                // System.out.println("PROBLEM PRI NEGIRANJU");
+                // System.out.println("---------->" + izraz);
+                // System.out.println();
+            } else {
+
+                right++;
+                izpisi(izraz.substring(polozaj + 1));
+                right--;
+            }
         } else {
 
-            end += izraz + ",";
+            if (izraz.equals("T")) {
+                end += "TRUE" + ",";
+
+            } else if (izraz.equals("F")) {
+                end += "FALSE" + ",";
+
+            } else {
+
+                end += izraz + ",";
+            }
             // System.out.print(izraz + " ");
             if (left + right + 1 > MAX_DEPTH) {
                 MAX_DEPTH = left + right + 1;
@@ -135,8 +172,11 @@ public class Naloga6 {
         BufferedReader tok = new BufferedReader(new FileReader(args[0]));
         PrintWriter p = new PrintWriter(new FileWriter(args[1]));
 
-        String vnosIzraz = tok.readLine().strip().replace("AND", "*").replace("or", "+").replace(" ", "").replace("NOT",
-                "|").replace("TRUE", "T").replace("FALSE", "F");
+        String vnosIzraz = tok.readLine().replace("AND", "*").replace("OR", "+").replace(" ", "")
+                .replace("NOT", "|").replace("TRUE", "T").replace("FALSE", "F");
+        // String vnosIzraz = tok.readLine().strip().replace("AND", "*").replace("OR",
+        // "+").replace(" ", "")
+        // .replace("NOT", "|").replace("TRUE", "T").replace("FALSE", "F");
         // System.out.println(vnosIzraz);
 
         izpisi(vnosIzraz);

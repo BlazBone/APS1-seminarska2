@@ -15,7 +15,7 @@ public class Naloga8 {
             this.root = to;
         }
 
-        public void poNivojih() {
+        public void poNivojih(PrintWriter p) {
             if (this.root == null) {
                 return;
                 // tega itak ne rabimo ma kao safety
@@ -37,7 +37,8 @@ public class Naloga8 {
                 // nodes of next level
                 while (nodeCount > 0) {
                     Node node = q.peek();
-                    System.out.printf("%d,%d,%d\n", node.vrednost, node.x, node.y);
+                    p.printf("%d,%d,%d\n", node.vrednost, node.x, node.y);
+                    // System.out.printf("%d,%d,%d\n", node.vrednost, node.x, node.y);
                     q.remove();
                     if (node.levi != null)
                         q.add(node.levi);
@@ -58,24 +59,24 @@ public class Naloga8 {
             }
             a.y = levo + desno;
             if (a.desni == null && a.levi == null) {
-                System.out.print(" this one ->");
-                System.out.print(a.vrednost);
+                // System.out.print(" this one ->");
+                // System.out.print(a.vrednost);
 
             } else {
-                levo++;
                 if (a.levi != null) {
-                    poVrsti.add(a.levi);
+                    levo++;
+                    poVrsti.add(poVrsti.indexOf(a), a.levi);
+                    izpisirek(a.levi);
+                    levo--;
                 }
-                izpisirek(a.levi);
-                levo--;
-                desno++;
                 if (a.desni != null) {
-                    poVrsti.add(poVrsti.lastIndexOf(a), a.desni);
+                    desno++;
+                    poVrsti.add(poVrsti.indexOf(a) + 1, a.desni);
+                    izpisirek(a.desni);
+                    desno--;
                 }
-                izpisirek(a.desni);
-                desno--;
-                System.out.print(" ");
-                System.out.print(a.vrednost);
+                // System.out.print(" ");
+                // System.out.print(a.vrednost);
 
             }
 
@@ -156,19 +157,21 @@ public class Naloga8 {
                 }
             }
         }
-        System.out.println(allNodes.length);
+        // System.out.println(poVrsti.size());
+        // System.out.println(allNodes.length);
         drev.izpisi();
-        System.out.println();
+        // System.out.println();
         // for (Node node : allNodes) {
         // System.out.printf("%d,%d,%d\n", node.vrednost, node.y, node.x);
         // }
         int i = 0;
         for (Node node : poVrsti) {
-            node.x = numOfNOdes - 1 - i;
+            // System.out.println(node.vrednost);
+            node.x = i;
             i++;
         }
 
-        drev.poNivojih();
+        drev.poNivojih(p);
         tok.close();
         p.close();
     }
