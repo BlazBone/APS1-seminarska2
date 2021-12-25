@@ -2,10 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -52,11 +49,10 @@ public class Naloga10 {
     public static class Mnozica {
         private int idMnozice;
         private HashSet<Tocka> tocke;
-        // private HashMap<Mnozica, Double> povezaveInRazdalje;
 
         public Mnozica(int id) {
             this.tocke = new HashSet<>();
-            // this.povezaveInRazdalje = new HashMap<>();
+
             this.idMnozice = id;
         }
 
@@ -88,6 +84,23 @@ public class Naloga10 {
 
     }
 
+    public static class Razdalja {
+        private double razdalja;
+        private Tocka ena;
+        private Tocka dva;
+
+        public Razdalja(Tocka ena, Tocka dva, double razdalja) {
+            this.razdalja = razdalja;
+            this.ena = ena;
+            this.dva = dva;
+        }
+
+        @Override
+        public String toString() {
+            return String.format(" [%f %d %d] ", this.razdalja, this.ena.idTocke, this.dva.idTocke);
+        }
+    }
+
     public static void main(String[] args) throws IOException {
 
         BufferedReader tok = new BufferedReader(new FileReader(args[0]));
@@ -95,8 +108,7 @@ public class Naloga10 {
 
         int stTock = Integer.parseInt(tok.readLine());
         double[][] razdaljeMedTockami = new double[stTock][stTock];
-
-        Tocka[] vseTocke = new Tocka[stTock];
+        ArrayList<Razdalja> vseRazdalje = new ArrayList<>();
         ArrayList<Tocka> vse = new ArrayList<>();
         ArrayList<Mnozica> vseMnozice = new ArrayList<>();
         for (int i = 0; i < stTock; i++) {
@@ -105,7 +117,9 @@ public class Naloga10 {
             vseMnozice.get(i).dodajTocko(vse.get(i));
             for (int j = 0; j < i; j++) {
                 double raz = vse.get(i).razdalja(vse.get(j));
-
+                vseRazdalje.add(new Razdalja(vse.get(i), vse.get(j), raz));
+                razdaljeMedTockami[i][j] = raz;
+                razdaljeMedTockami[j][i] = raz;
                 if (raz < vse.get(i).razdaljaDoNajblizje) {
                     vse.get(i).razdaljaDoNajblizje = raz;
                     vse.get(i).najblizja = vse.get(j);
@@ -114,33 +128,47 @@ public class Naloga10 {
                     vse.get(j).razdaljaDoNajblizje = raz;
                     vse.get(j).najblizja = vse.get(i);
                 }
-
             }
-
         }
+
         int stSkupin = Integer.parseInt(tok.readLine());
         tok.close();
 
         Collections.sort(vse, (o1, o2) -> Double.compare(o1.razdaljaDoNajblizje, o2.razdaljaDoNajblizje));
+        Collections.sort(vseRazdalje, (o1, o2) -> Double.compare(o1.razdalja, o2.razdalja));
 
-        while (stSkupin >= ) {
-            
+        while (vseMnozice.size() > stSkupin) {
+            Razdalja temp = vseRazdalje.get(0);
+            vseRazdalje.remove(0);
+            Mnozica prva = temp.ena.spada;
+            Mnozica druga = temp.dva.spada;
+            vseMnozice.remove(prva);
+            vseMnozice.remove(druga);
+            Mnozica temoMno = new Mnozica(Math.min(prva.idMnozice, druga.idMnozice));
+            temoMno.dodajMnozico(prva);
+            temoMno.dodajMnozico(druga);
+            vseMnozice.add(temoMno);
+
         }
 
-    
-
-        System.out.println();
-        System.err.println(vse.size());
-        // System.out.println(vseMnozice.size());
-        for (Tocka jasnTocka : vse) {
-            jasnTocka.izpisi();
-        }
-        System.out.println();
-
-        System.out.println(vseMnozice.size());
+        Collections.sort(vseMnozice, (o1, o2) -> o1.idMnozice - o2.idMnozice);
         for (Mnozica mnozica : vseMnozice) {
-            mnozica.izpisiMnozico();
+            ArrayList<Tocka> lista = new ArrayList<Tocka>(mnozica.tocke);
+
+            Collections.sort(lista, (o1, o2) -> o1.idTocke - o2.idTocke);
+            boolean prvi = true;
+            for (Tocka tt : lista) {
+                if (prvi) {
+                    p.print(tt.idTocke);
+                    prvi = false;
+                } else {
+                    p.print("," + tt.idTocke);
+                }
+            }
+            p.println();
         }
+
+        p.close();
 
     }
 }
