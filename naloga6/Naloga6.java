@@ -183,8 +183,8 @@ public class Naloga6 {
 
         p.println(end.substring(0, end.length() - 1));
         p.println(MAX_DEPTH);
-        System.out.println(end.substring(0, end.length() - 1));
-        System.out.println(MAX_DEPTH);
+        // System.out.println(end.substring(0, end.length() - 1));
+        // System.out.println(MAX_DEPTH);
         p.close();
         tok.close();
 
