@@ -127,37 +127,7 @@ public class Naloga10 {
             
         }
 
-        // for (int i = 0; i < vse.size() - stSkupin + 1; i++) {
-        //     Tocka tc = vse.get(i);
-        //     Mnozica a = tc.najblizja.spada;
-        //     Mnozica b = tc.spada;
-
-        //     tc.tuki = tc.najblizja.tuki;
-
-        //     // if (!a.equals(b)) {
-        //     // System.out.println("DODAMO");
-        //     // vse.get(i).spada.izpisiMnozico();
-        //     // System.out.println("+");
-
-        //     // vse.get(i).najblizja.spada.izpisiMnozico();
-
-        //     // vse.get(i).spada.dodajMnozico(vse.get(i).najblizja.spada);
-        //     // System.out.println("=");
-        //     // vse.get(i).spada.izpisiMnozico();
-
-        //     // System.out.println("ODSTRANIMO");
-        //     // a.izpisiMnozico();
-        //     // vseMnozice.remove(a);
-
-        //     // System.out.println();
-        //     // System.out.println();
-        //     // System.out.println();
-        //     // }
-
-        //     if (vseMnozice.size() == stSkupin) {
-        //         break;
-        //     }
-        // }
+    
 
         System.out.println();
         System.err.println(vse.size());
