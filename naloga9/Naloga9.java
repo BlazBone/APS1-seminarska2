@@ -1,5 +1,4 @@
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -8,81 +7,88 @@ import java.util.*;
 public class Naloga9 {
 
     public static void dodajPovezavo(ArrayList<ArrayList<Integer>> povezave, int zacetna, int koncna) {
-        // itak je u obe smeri ma we
+        // itak je u obe smeri zato zacetna konca ne mejka sensa sam ja.
         povezave.get(zacetna).add(koncna);
         povezave.get(koncna).add(zacetna);
     }
 
-    private static boolean BFS(ArrayList<ArrayList<Integer>> adj, int src,
-            int dest, int v, int pred[], int dist[]) {
-        // a queue to maintain queue of vertices whose
-        // adjacency list is to be scanned as per normal
-        // BFS algorithm using LinkedList of Integer type
+    private static boolean BFS(ArrayList<ArrayList<Integer>> povezave, int zac,
+            int konc, int stNodes, int pred[], int razdalja[]) {
+        // navaden queue za BFS algoritem
         LinkedList<Integer> queue = new LinkedList<Integer>();
 
-        // boolean array visited[] which stores the
-        // information whether ith vertex is reached
-        // at least once in the Breadth first search
-        boolean visited[] = new boolean[v];
+        // oznacimoi node, ki smo jih ze obiskali
+        boolean smoze[] = new boolean[stNodes];
 
-        // initially all vertices are unvisited
-        // so v[i] for all i is false
-        // and as no path is yet constructed
-        // dist[i] for all i set to infinity
-        for (int i = 0; i < v; i++) {
-            visited[i] = false;
-            dist[i] = Integer.MAX_VALUE;
+        // nastavimo, da nismo obiskali ze nobenga noda(ceprau je deefault ze to), pa da
+        // je od enega noda do nasledngea distance neskoncxno in da nima predhodnika se.
+        // to spreminjamo pole v loop v
+        for (int i = 0; i < stNodes; i++) {
+            smoze[i] = false;
+            razdalja[i] = Integer.MAX_VALUE;
             pred[i] = -1;
         }
 
-        // now source is first to be visited and
-        // distance from source to itself should be 0
-        visited[src] = true;
-        dist[src] = 0;
-        queue.add(src);
+        // ker se lotimo na nodu z id zac oznacimo da smo tu ze bili oznacimio da je
+        // razdalja o sm 0(ker je start) in ga sddodamoo v que in se odpravimo v zankico
+        smoze[zac] = true;
+        razdalja[zac] = 0;
+        queue.add(zac);
 
-        // bfs Algorithm
+        // BFS
         while (!queue.isEmpty()) {
             int u = queue.remove();
-            for (int i = 0; i < adj.get(u).size(); i++) {
-                if (visited[adj.get(u).get(i)] == false) {
-                    visited[adj.get(u).get(i)] = true;
-                    dist[adj.get(u).get(i)] = dist[u] + 1;
-                    pred[adj.get(u).get(i)] = u;
-                    queue.add(adj.get(u).get(i));
+            for (int i = 0; i < povezave.get(u).size(); i++) {
+                if (smoze[povezave.get(u).get(i)] == false) {
+                    smoze[povezave.get(u).get(i)] = true;
+                    // no comment za gor
 
-                    // stopping condition (when we find
-                    // our destination)
-                    if (adj.get(u).get(i) == dest)
+                    // razdalja do tega vozlisca je enaka razdalji do vozlisca v katerem smo + 1,
+                    // saj se tja premaknemo das ist ja logisch
+                    razdalja[povezave.get(u).get(i)] = razdalja[u] + 1;
+                    // zapisemo si, da v tem nodu ki ga dodamo v queue je biu prejsni node enak nodu
+                    // v katerem smo sedaj. to nam pride prav, ko iz cilja lahko
+                    // enolicno dolocimo pot iz katere smo prisli
+                    pred[povezave.get(u).get(i)] = u;
+                    queue.add(povezave.get(u).get(i));
+
+                    // ce pa naletimo na konc odpremo sampanjec in smo lahko veseli
+                    if (povezave.get(u).get(i) == konc)
                         return true;
                 }
             }
         }
+        System.out.println("CE SMO TU JE NEKI NAROBE");
+        // nej nebi prsli sm cene je neki nrobe
         return false;
     }
 
     private static void dodajNajkrasiRazdalji(
-            ArrayList<ArrayList<Integer>> adj,
-            int s, int dest, int v, int stpotnikov, int[][] carina) {
-        // predecessor[i] array stores predecessor of
-        // i and distance array stores distance of i
-        // from s
-        int pred[] = new int[v];
-        int dist[] = new int[v];
+            ArrayList<ArrayList<Integer>> povezave,
+            int zac, int konc, int stnodes, int stpotnikov, int[][] carina) {
 
-        if (BFS(adj, s, dest, v, pred, dist) == false) {
-            System.out.println("Given source and destination" +
-                    "are not connected");
+        // tabela, ki jo bomo uporabili v BFS in jo tam napoilnili nato pa potrebovali
+        // tu
+        // ime index->predhodnik na poti
+
+        int pred[] = new int[stnodes];
+        // razdalja
+        int razdalja[] = new int[stnodes];
+        if (zac >= stnodes || konc >= stnodes) {
+            // somehow ima 4 nek sfaljen test in hoce da pridemo iz nekega noda k ne obstaja
+            // meme ugl
             return;
         }
+        BFS(povezave, zac, konc, stnodes, pred, razdalja);
 
-        // LinkedList to store path
         LinkedList<Integer> path = new LinkedList<Integer>();
-        int crawl = dest;
-        path.add(crawl);
-        while (pred[crawl] != -1) {
-            path.add(pred[crawl]);
-            crawl = pred[crawl];
+        int temp = konc;
+        path.add(temp);
+        // sprehajamo se od odzadi (konc) preko predhodnikov do zacetka oz do noda, ki
+        // ima predhodnika -1 kar pa je zacetek
+        while (pred[temp] != -1) {
+            path.add(pred[temp]);
+            temp = pred[temp];
         }
 
         for (int i = 1; i < path.size(); i++) {
@@ -104,38 +110,32 @@ public class Naloga9 {
         String[] stevila = tok.readLine().split(",");
         int stPovezav = Integer.parseInt(stevila[0]);
         int stFacts = Integer.parseInt(stevila[1]);
+        String[][] vhodPovezave = new String[stPovezav][];
 
-        // for (int i = 0; i < stPovezav; i++) {
-        // stevila = tok.readLine().split(",");
-        // povezave[Integer.parseInt(stevila[0]) - 1][Integer.parseInt(stevila[1]) - 1]
-        // = 1;
-        // povezave[Integer.parseInt(stevila[1]) - 1][Integer.parseInt(stevila[0]) - 1]
-        // = 1;
-        // }
         int stNodes = 0;
-        ArrayList<ArrayList<Integer>> povezave = new ArrayList<ArrayList<Integer>>(505);
-        for (int i = 0; i < 505; i++) {
-            povezave.add(new ArrayList<Integer>());
-        }
         for (int i = 0; i < stPovezav; i++) {
-            stevila = tok.readLine().split(",");
-            int ena = Integer.parseInt(stevila[0]);
-            int dva = Integer.parseInt(stevila[1]);
+            vhodPovezave[i] = tok.readLine().split(",");
+            int dva = Integer.parseInt(vhodPovezave[i][1]);
             if (dva > stNodes) {
                 stNodes = dva;
             }
-            dodajPovezavo(povezave, ena, dva);
         }
         stNodes++;
+        ArrayList<ArrayList<Integer>> povezave = new ArrayList<ArrayList<Integer>>(stNodes);
+        for (int i = 0; i < stNodes; i++) {
+            povezave.add(new ArrayList<Integer>());
+        }
+        for (String[] a : vhodPovezave) {
+            dodajPovezavo(povezave, Integer.parseInt(a[0]), Integer.parseInt(a[1]));
+        }
+
         int[][] carina = new int[stNodes][stNodes];
 
-        int zac = 1;
-        int kon = 2;
-        int stLjudi = 10;
         for (int i = 0; i < stFacts; i++) {
             stevila = tok.readLine().split(",");
 
-            dodajNajkrasiRazdalji(povezave, Integer.parseInt(stevila[0]), Integer.parseInt(stevila[1]), 505,
+            dodajNajkrasiRazdalji(povezave, Integer.parseInt(stevila[0]), Integer.parseInt(stevila[1]),
+                    stNodes,
                     Integer.parseInt(stevila[2]), carina);
         }
 
@@ -144,7 +144,6 @@ public class Naloga9 {
         for (int i = 1; i < carina.length; i++) {
             for (int j = i; j < carina.length; j++) {
                 if (carina[i][j] > max) {
-                    // System.out.println("HERE " + i + " " + j);
                     rezultati = new ArrayList<>();
                     int[] jaja = new int[2];
                     jaja[0] = i;
@@ -159,10 +158,8 @@ public class Naloga9 {
                 }
             }
         }
-        // System.out.println("FISODA JHFSDHJFSDHJ A");
-        for (int[] biba : rezultati) {
-            System.out.println(Arrays.toString(biba));
-            p.printf("%d,%d\n", biba[0], biba[1]);
+        for (int[] neki : rezultati) {
+            p.printf("%d,%d\n", neki[0], neki[1]);
         }
 
         p.close();
