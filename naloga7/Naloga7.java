@@ -115,6 +115,10 @@ public class Naloga7 {
 
             Integer prev = null;
             for (Integer idPostaje : tempPostaje) {
+                if (idPostaje > steviloPostaj) {
+                    steviloPostaj = idPostaje;
+                }
+
                 if (postaje[idPostaje] == null) {
                     postaje[idPostaje] = new Postaja(idPostaje, new HashSet<>(), new HashSet<>());
                     postaje[idPostaje].linijeNaPostaji.add(i);
@@ -139,15 +143,6 @@ public class Naloga7 {
         temp = tok.readLine().split(",");
         idZacetka = Integer.parseInt(temp[0]);
         idKonca = Integer.parseInt(temp[1]);
-
-        // for (Postaja postaja : postaje) {
-        // if (postaja != null) {
-        // System.out.println(postaja.idPostaje);
-        // System.out.println(postaja.sosednjePostaje.toString());
-        // System.out.println(postaja.linijeNaPostaji.toString());
-        // System.out.println();
-        // }
-        // }
 
         Queue<QueueEl> q = new LinkedList<>();
         HashSet<Integer> smoZeObiskaliLinijo = new HashSet<>();
@@ -193,7 +188,7 @@ public class Naloga7 {
         Queue<QueueEl2> q2 = new LinkedList<>();
         HashSet<Integer> smoZeObiskaliPostajo = new HashSet<>();
         HashSet<Integer> smoDaliVseVerzije = new HashSet<>();
-        HashSet<Integer> obiskaneLinije = new HashSet<>();
+
         // rabimo d gre samo dovolj mest
         for (Integer integer : postaje[idZacetka].linijeNaPostaji) {
             q2.add(new QueueEl2(integer, 0, idZacetka, 0));
@@ -205,20 +200,12 @@ public class Naloga7 {
         while (!q2.isEmpty()) {
             tempQel2 = q2.poll();
 
-            // System.out.printf("id:%d, lin:%d, kor:%d, prestop:%d\n", tempQel2.idPostaje,
-            // tempQel2.idLinije,
-            // tempQel2.korak,
-            // tempQel2.prestopanja);
             if (tempQel2.idPostaje == idKonca) {
-                System.out.printf("id:%d, lin:%d, kor:%d, prestop:%d\n", tempQel2.idPostaje, tempQel2.idLinije,
-                        tempQel2.korak,
-                        tempQel2.prestopanja);
+
                 if (najpot == null) {
                     najpot = tempQel2;
                 } else {
-                    // if (tempQel2.korak > najpot.korak) {
-                    // break;
-                    // }
+
                     if (tempQel2.korak < najpot.korak) {
                         najpot = tempQel2;
                     }
@@ -230,24 +217,6 @@ public class Naloga7 {
             }
             smoZeObiskaliPostajo.add(tempQel2.idPostaje);
 
-            // for (Integer idSosedaInteger : postaje[tempQel2.idPostaje].sosednjePostaje) {
-            // if (!smoZeObiskaliPostajo.contains(idSosedaInteger)) {
-            // if (postaje[idSosedaInteger].linijeNaPostaji.contains(tempQel2.idLinije)) {
-            // q2.add(new QueueEl2(tempQel2.idLinije, tempQel2.korak + 1, idSosedaInteger,
-            // tempQel2.prestopanja));
-            // // System.out.println("dodajamo1: ");
-            // if (idSosedaInteger == 17) {
-            // System.out.println("TA JE: ");
-            // System.out.printf("id:%d, lin:%d, kor:%d, prestop:%d\n", tempQel2.idPostaje,
-            // tempQel2.idLinije,
-            // tempQel2.korak,
-            // tempQel2.prestopanja);
-            // System.out.println();
-
-            // }
-            // }
-            // }
-            // }
             ArrayList tempPost = vseLinijelist[tempQel2.idLinije];
             int pozTemp = tempPost.indexOf(tempQel2.idPostaje);
 
@@ -275,14 +244,10 @@ public class Naloga7 {
 
             if (!smoDaliVseVerzije.contains(tempQel2.idPostaje)) {
                 for (Integer linijaTempa : postaje[tempQel2.idPostaje].linijeNaPostaji) {
-                    // System.out.printf("dodajamo1: %d postajo, na liniji %d \n",
-                    // tempQel2.idPostaje, linijaTempa);
-                    // System.out.println(postaje[tempQel2.idPostaje].linijeNaPostaji.toString());
 
                     if (linijaTempa != tempQel2.idLinije) {
                         q2.add(new QueueEl2(linijaTempa, tempQel2.korak, tempQel2.idPostaje,
                                 tempQel2.prestopanja + 1));
-                        // System.out.println("dodajamo1: ");
 
                     }
                 }
@@ -290,16 +255,34 @@ public class Naloga7 {
             smoDaliVseVerzije.add(tempQel2.idPostaje);
 
         }
-        int najkraskaPot = najpot.korak;
+
+        Queue<int[]> q3 = new LinkedList<>();
+        boolean[] smozebili = new boolean[steviloPostaj + 1];
+
+        int[] tempInt = new int[2];
+        tempInt[0] = idZacetka;
+        tempInt[1] = 0;
+        smozebili[idZacetka] = true;
+        q3.add(tempInt);
+        while (!q3.isEmpty()) {
+            tempInt = q3.poll();
+            if (tempInt[0] == idKonca) {
+                break;
+            }
+
+            for (Integer i : postaje[tempInt[0]].sosednjePostaje) {
+                if (!smozebili[i]) {
+                    int[] a = { i, tempInt[1] + 1 };
+                    q3.add(a);
+                    smozebili[i] = true;
+                }
+            }
+
+        }
+
+        int najkraskaPot = tempInt[1];
 
         int jabadabaduba = najpot.prestopanja;
-
-        System.out.println(najmanjseSteviloPrestopanj);
-        System.out.println(najkraskaPot);
-
-        System.out.println(
-                jabadabaduba == najmanjseSteviloPrestopanj ? 1
-                        : 0);
 
         p.println(najmanjseSteviloPrestopanj);
         p.println(najkraskaPot);
