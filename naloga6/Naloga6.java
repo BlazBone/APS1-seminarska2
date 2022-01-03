@@ -98,6 +98,9 @@ public class Naloga6 {
         while (odvecniParOklepajev(izraz)) {
             izraz = izraz.substring(1, izraz.length() - 1);
         }
+        if (left + right + 1 > MAX_DEPTH) {
+            MAX_DEPTH = left + right + 1;
+        }
         // System.out.println(izraz);
 
         int polozaj = najboljDesniNajsibkejsiOperator(izraz);
@@ -105,7 +108,7 @@ public class Naloga6 {
         // vhodu
         if (polozaj > 0) {
             natisniOperand(izraz.charAt(polozaj));
-
+            // System.out.println(izraz);
             // razdelimo na dva dela in poklicemo rekurzivno
             // levidel
             if (izraz.substring(0, polozaj).length() == 0) {
@@ -137,6 +140,7 @@ public class Naloga6 {
                 // System.out.println("PROBLEM PRI NEGIRANJU");
                 // System.out.println("---------->" + izraz);
                 // System.out.println();
+                right++;
             } else {
 
                 right++;
