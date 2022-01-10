@@ -56,7 +56,7 @@ public class Naloga7 {
     public static class QueueEl2 {
         int idPostaje;
         int idLinije;
-        int korak;
+        int korak;// dozlina poti do sedaj
         int prestopanja;
 
         public QueueEl2(int idlinije, int korak, int idpostaje, int prestopanja) {
@@ -94,7 +94,7 @@ public class Naloga7 {
             temp = tok.readLine().split(",");
             ArrayList<Integer> tempPostaje = new ArrayList<>();
             HashSet<Integer> tempSosedi = new HashSet<>();
-
+            // [1,2,3,4,5]
             for (String postaja : temp) {
                 tempPostaje.add(Integer.parseInt(postaja));
             }
@@ -206,6 +206,8 @@ public class Naloga7 {
                     najpot = tempQel2;
                 } else {
 
+                    // if(stevilo korakov > stevila korakov minimum )
+                    // break;
                     if (tempQel2.korak < najpot.korak) {
                         najpot = tempQel2;
                     }
