@@ -57,11 +57,13 @@ public class Naloga8 {
             if (a == null) {
                 return;
             }
+            // y je globina jaz sem meril koliko korakov naredimo levo koliko desno ampak sm
+            // potem vidu da tega nerabimno da lahko na drug nacin resimo
             a.y = levo + desno;
             if (a.desni == null && a.levi == null) {
                 // System.out.print(" this one ->");
                 // System.out.print(a.vrednost);
-
+                // tle nimamo kej ce nima otrok
             } else {
                 if (a.levi != null) {
                     levo++;
@@ -79,6 +81,11 @@ public class Naloga8 {
                 // System.out.print(a.vrednost);
 
             }
+            // ideja je da mamo nek arraylist in pole damo notr root in levo od roota damo
+            // levega otroka. pole od levega otroka damo desnega otroka med njim pa rootom
+            // ubistvu samo insertamo levo ali desno od trenutnega noda in pridemo do konca
+            // rekurzivno
+            // lahko bi imeli inorder treversal
 
         }
     }
@@ -140,13 +147,16 @@ public class Naloga8 {
         sinovi.remove(-1);
         vsiNodsi.removeAll(sinovi);
         int idGlavnega = (int) vsiNodsi.toArray()[0];
-
+        // removamo -1 ker to pomeni da nimas sina ko odstranimo od vseh samo tiste ki
+        // imajo oceta ostane samo edn to je root
         DreevesceBozicnoLepo drev = null;
 
+        // samo gradimo drevo prikljucimo levega pa desnega sina usakemu
         for (Node node1 : allNodes) {
             if (node1.id == idGlavnega) {
                 drev = new DreevesceBozicnoLepo(node1);
                 poVrsti.add(node1);
+                // doamo samo root ker potem gradimo rekurzivno iz njega
             }
             for (Node node2 : allNodes) {
                 if (node1.desniId == node2.id) {

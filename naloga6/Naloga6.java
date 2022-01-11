@@ -25,6 +25,7 @@ public class Naloga6 {
     }
 
     public static boolean odvecniParOklepajev(String izraz2) {
+        // odstrani oklepaje naprimer ((2+4))-->2+4
         char[] izraz = izraz2.toCharArray();
         if (izraz.length == 0) {
             // System.out.println("HWJJJJJJJJ");
@@ -95,6 +96,7 @@ public class Naloga6 {
         // if (izraz.length() == 0) {
         // // System.out.println("WE HAVE A PROBLEM");
         // }
+        //
         while (odvecniParOklepajev(izraz)) {
             izraz = izraz.substring(1, izraz.length() - 1);
         }
@@ -117,6 +119,7 @@ public class Naloga6 {
                 // System.out.println();
             }
             left++;
+
             izpisi(izraz.substring(0, polozaj));
             left--;
             // desnidel

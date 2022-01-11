@@ -12,6 +12,8 @@ import java.io.IOException;
  */
 public class Naloga10 {
 
+
+    //3/4 je uselesss mislim da sem potreboval samo id x y ter spada, ki nam pove pod katero mnozico se v danem trenutku nahaja tocka
     public static class Tocka {
         private int idTocke;
         private double x;
@@ -47,6 +49,7 @@ public class Naloga10 {
     }
 
     public static class Mnozica {
+        //samo da ima se id in par mnozic 
         private int idMnozice;
         private HashSet<Tocka> tocke;
 
@@ -84,6 +87,7 @@ public class Naloga10 {
 
     }
 
+    // navadn razred razdalja ga rabimno za vse razdalje
     public static class Razdalja {
         private double razdalja;
         private Tocka ena;
@@ -107,10 +111,16 @@ public class Naloga10 {
         PrintWriter p = new PrintWriter(new FileWriter(args[1]));
 
         int stTock = Integer.parseInt(tok.readLine());
-        double[][] razdaljeMedTockami = new double[stTock][stTock];
-        ArrayList<Razdalja> vseRazdalje = new ArrayList<>();
-        ArrayList<Tocka> vse = new ArrayList<>();
-        ArrayList<Mnozica> vseMnozice = new ArrayList<>();
+        double[][] razdaljeMedTockami = new double[stTock][stTock];// imamo vse razdalje
+        ArrayList<Razdalja> vseRazdalje = new ArrayList<>();// tudi tukaj le da tukaj jih kasneje sortiramo in vzamemo
+                                                            // najbljizjo vedno
+        ArrayList<Tocka> vse = new ArrayList<>(); // vse tocke,
+        ArrayList<Mnozica> vseMnozice = new ArrayList<>();// vse mnozice
+
+        // gremo skozi vhod vsakic dodamo novo tocko in za to tocko naredimo tudi
+        // mnozico
+        // potem pa gremo do tak kjer smo ze prebrali in zracunamo razdaljo jih vpisemo
+        // za obe tocki its...
         for (int i = 0; i < stTock; i++) {
             vse.add(new Tocka(tok.readLine().split(","), i + 1));
             vseMnozice.add(new Mnozica(vse.get(i).idTocke));
@@ -134,9 +144,14 @@ public class Naloga10 {
         int stSkupin = Integer.parseInt(tok.readLine());
         tok.close();
 
-        Collections.sort(vse, (o1, o2) -> Double.compare(o1.razdaljaDoNajblizje, o2.razdaljaDoNajblizje));
+        Collections.sort(vse, (o1, o2) -> Double.compare(o1.razdaljaDoNajblizje, o2.razdaljaDoNajblizje));// sploh ne
+                                                                                                          // uporabimo
         Collections.sort(vseRazdalje, (o1, o2) -> Double.compare(o1.razdalja, o2.razdalja));
 
+        // gremo skozi in vsakic uzamemo najblizjo razdaljo zbrisemo mnozici teh tock
+        // katerih razdalja je najmnajsa naredimo skupno mnozico in jo vstavimo v
+        // arraylist vseh mnozic
+        // algo se zakkljuci
         while (vseMnozice.size() > stSkupin) {
             Razdalja temp = vseRazdalje.get(0);
             vseRazdalje.remove(0);
@@ -151,6 +166,7 @@ public class Naloga10 {
 
         }
 
+        // samo sortiramo da so mnozice po vrsti in enako tudi za tocke in printamo
         Collections.sort(vseMnozice, (o1, o2) -> o1.idMnozice - o2.idMnozice);
         for (Mnozica mnozica : vseMnozice) {
             ArrayList<Tocka> lista = new ArrayList<Tocka>(mnozica.tocke);

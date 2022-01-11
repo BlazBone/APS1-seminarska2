@@ -83,10 +83,10 @@ public class Naloga7 {
 
         int idZacetka, idKonca;
 
-        Linija[] linije = new Linija[stLinij];
+        Linija[] linije = new Linija[stLinij]; // linijje
         Postaja[] postaje = new Postaja[50000];// treba nekako popraviti alpa sam dat nek max
-        ArrayList[] vseLinijelist = new ArrayList[stLinij];
-        String[] temp;
+        ArrayList[] vseLinijelist = new ArrayList[stLinij]; // samo index in arraylist postaj
+        String[] temp; // za branje vhoda
         int steviloPostaj = 0;
 
         for (int i = 0; i < stLinij; i++) {
@@ -98,7 +98,8 @@ public class Naloga7 {
             for (String postaja : temp) {
                 tempPostaje.add(Integer.parseInt(postaja));
             }
-            vseLinijelist[i] = tempPostaje;
+
+            vseLinijelist[i] = tempPostaje; // tle dodamo postaje
             for (int j = 0; j < i; j++) {
 
                 for (Integer postajaInteger : tempPostaje) {
@@ -109,10 +110,11 @@ public class Naloga7 {
                         break;
                     }
                 }
+                // linijei majo use sosede se zravn pole se je pojavilo da to ne dela
             }
 
             linije[i] = new Linija(i, tempSosedi, tempPostaje);
-
+            // naredimo linijo z tempi
             Integer prev = null;
             for (Integer idPostaje : tempPostaje) {
                 if (idPostaje > steviloPostaj) {
@@ -124,6 +126,9 @@ public class Naloga7 {
                     postaje[idPostaje].linijeNaPostaji.add(i);
 
                 }
+                // dodajamo sosede. ce postaja se ne oobstaja potem naredimoi novo in samo
+                // addamo sosede
+
                 postaje[idPostaje].linijeNaPostaji.add(i);
 
                 if (prev != null) {
@@ -131,7 +136,9 @@ public class Naloga7 {
                     postaje[idPostaje].sosednjePostaje.add(prev);
                     postaje[prev].sosednjePostaje.add(idPostaje);
                     postaje[idPostaje].linijeNaPostaji.add(i);
-
+                    // 1 2 3 4
+                    // ko smo v dva dodamo dvojki enko enko dvojki....
+                    // tako vezemo sosede
                 }
 
                 prev = idPostaje;
@@ -221,6 +228,7 @@ public class Naloga7 {
 
             ArrayList tempPost = vseLinijelist[tempQel2.idLinije];
             int pozTemp = tempPost.indexOf(tempQel2.idPostaje);
+            // dodajamo v queue samo postaje ki so sosednje na isti liniji
 
             if (pozTemp == 0) {
                 if (tempPost.size() >= 2 && !smoZeObiskaliPostajo.contains(tempPost.get(pozTemp + 1))) {
@@ -243,7 +251,7 @@ public class Naloga7 {
                             tempQel2.prestopanja));
                 }
             }
-
+            // dodamo kopijo sebe na drugih linijah
             if (!smoDaliVseVerzije.contains(tempQel2.idPostaje)) {
                 for (Integer linijaTempa : postaje[tempQel2.idPostaje].linijeNaPostaji) {
 

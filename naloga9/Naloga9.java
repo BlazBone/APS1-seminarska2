@@ -94,7 +94,10 @@ public class Naloga9 {
         for (int i = 1; i < path.size(); i++) {
             Integer prva = path.get(i - 1);
             Integer druga = path.get(i);
-
+            // 1-2-3-4
+            // potem na povezavah 1.2 2.3 3.4 pristejemo stevilo potnikov, ki se sprehodi
+            // skozi
+            // also vedno je prvi index manjsi kot drugi
             if (prva < druga) {
                 carina[prva][druga] += stpotnikov;
             } else {
@@ -110,9 +113,9 @@ public class Naloga9 {
         String[] stevila = tok.readLine().split(",");
         int stPovezav = Integer.parseInt(stevila[0]);
         int stFacts = Integer.parseInt(stevila[1]);
-        String[][] vhodPovezave = new String[stPovezav][];
+        String[][] vhodPovezave = new String[stPovezav][]; // shranimo input ubistvu prvi del
 
-        int stNodes = 0;
+        int stNodes = 0; // koliko je vseh nods
         for (int i = 0; i < stPovezav; i++) {
             vhodPovezave[i] = tok.readLine().split(",");
             int dva = Integer.parseInt(vhodPovezave[i][1]);
@@ -125,21 +128,26 @@ public class Naloga9 {
         for (int i = 0; i < stNodes; i++) {
             povezave.add(new ArrayList<Integer>());
         }
+        // dodamo te povezave v arraylist... podobno bi lahko naredili adjecenty list z
+        // hashmap ali we nam pride na pamet
         for (String[] a : vhodPovezave) {
             dodajPovezavo(povezave, Integer.parseInt(a[0]), Integer.parseInt(a[1]));
         }
 
         int[][] carina = new int[stNodes][stNodes];
+        // tuki bomo pisali kolko je potniku hoidlo cez
 
         for (int i = 0; i < stFacts; i++) {
             stevila = tok.readLine().split(",");
-
+            // za vsak fact klicemo funkcjio pioposcemo najkrasjo pot in dodamo carinico
             dodajNajkrasiRazdalji(povezave, Integer.parseInt(stevila[0]), Integer.parseInt(stevila[1]),
                     stNodes,
                     Integer.parseInt(stevila[2]), carina);
         }
 
         int max = 0;
+
+        // samo sprintamo podatke iz carine
         ArrayList<int[]> rezultati = new ArrayList<>();
         for (int i = 1; i < carina.length; i++) {
             for (int j = i; j < carina.length; j++) {
