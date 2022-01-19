@@ -1,0 +1,40 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch with Arguments Prompt",
+            "request": "launch",
+            "mainClass": "",
+            "args": "${command:SpecifyProgramArgs}"
+        },
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Launch Naloga3",
+            "request": "launch",
+            "mainClass": "Naloga3",
+            "projectName": "naloga3_70bc4a90"
+        },
+        {
+            "type": "java",
+            "name": "Launch Naloga2",
+            "request": "launch",
+            "mainClass": "Naloga2"
+        },
+        {
+            "type": "java",
+            "name": "Launch Postfix",
+            "request": "launch",
+            "mainClass": "Postfix"
+        }
+    ]
+}

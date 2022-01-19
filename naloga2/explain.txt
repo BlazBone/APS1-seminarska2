@@ -1,0 +1,27 @@
+1.)To je preprost testni primer z enim odstavkom. To pa je druga poved.
+2.)(je to testni preprost z primer odstavkom. enim) pa to druga je poved.
+3.)pa to druga je poved. je to testni preprost z primer odstavkom enim.
+
+4.)
+
+ap oT agurd ej .devop ej oT intset tsorperp z remirp .mokvatsdo mine
+to pa je druga poved. to je preporst testni primer z enim odstavkom.
+1->2->3->4->5
+5->4->3->2->1
+
+Dajmo narediti test. Vsebuje tri povedi ker smo prej imeli samo dve. Zadnja pa je ta.
+
+omjaD itiferan .tset ejubesV irt idevop rek oms jerp ilemi omas .evd ajndaZ ap ej .at
+itiferan omjaD .tset irt ejubesV rek idevop jerp oms omas ilemi .evd ap ajndaZ .at ej
+
+ap ajndaZ .at ej irt ejubesV rek idevop jerp oms omas ilemi .evd itiferan omjaD .tset
+
+nmajprej odstavke menjamo
+pole pogledamo kje se koncajo povedi glede na ppiko in veliko zacetnico. 
+potem vsako poved premesamo beseede sode in lihe nazaj. potem pa besedo po besedo spremenimo da se poise po naprej.
+
+
+
+
+Zivijo kako si ti. Kako jutri zjutraj si.
+kako Zivijo ti. si jutri Kako si. zjutraj

@@ -12,8 +12,8 @@ import java.io.IOException;
  */
 public class Naloga10 {
 
-
-    //3/4 je uselesss mislim da sem potreboval samo id x y ter spada, ki nam pove pod katero mnozico se v danem trenutku nahaja tocka
+    // 3/4 je uselesss mislim da sem potreboval samo id x y ter spada, ki nam pove
+    // pod katero mnozico se v danem trenutku nahaja tocka
     public static class Tocka {
         private int idTocke;
         private double x;
@@ -49,7 +49,7 @@ public class Naloga10 {
     }
 
     public static class Mnozica {
-        //samo da ima se id in par mnozic 
+        // samo da ima se id in par mnozic
         private int idMnozice;
         private HashSet<Tocka> tocke;
 
@@ -186,5 +186,24 @@ public class Naloga10 {
 
         p.close();
 
+        System.out.println(rek(5, 1));
+    }
+
+    private static int rek(int n, int zmnozek) {
+        if (n == 0) {
+            return zmnozek;
+        } else {
+            return rek(n - 1, zmnozek * n);
+        }
+    }
+
+    private static int biba(int n, int a) {
+
+        while (n > 0) {
+            a *= n;
+
+            n--;
+        }
+        return a;
     }
 }
