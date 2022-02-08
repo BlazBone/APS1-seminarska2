@@ -1,10 +1,4 @@
 import java.io.*;
-import java.lang.ref.Cleaner.Cleanable;
-import java.lang.reflect.Array;
-import java.util.Arrays;
-
-import javax.swing.plaf.synth.SynthSplitPaneUI;
-import javax.xml.transform.Templates;
 
 public class Naloga3 {
 
@@ -15,16 +9,19 @@ public class Naloga3 {
 
         private Integer[] arr;
         private clenSeznama naslednji;
-        private clenSeznama prejsni;
         private int dolzinaClena;
-        private boolean cezPolovico;
         private int prviProstIndex;
         private boolean imamoProstor;
+        // clen ma take uporabne elemente
 
         public int getPrviProstiIndex() {
             return this.prviProstIndex;
         }
 
+        // nevem keje bla neka fora d ni hotlo dejansko mi setta in pole sm napisu
+        // funkcijo d mi nrdi samo
+        // al je fora da ta funkcjia mi automatsko tudi updejta ce mamo prostor k cene
+        // bi mogu usakig hardcode prevert
         public int setPrviProstiIndex(int a) {
             this.prviProstIndex = this.prviProstIndex + a;
 
@@ -32,12 +29,6 @@ public class Naloga3 {
                 this.imamoProstor = true;
             } else {
                 this.imamoProstor = false;
-            }
-
-            if (this.prviProstIndex - 1 > this.dolzinaClena / 2) {
-                cezPolovico = true;
-            } else {
-                cezPolovico = false;
             }
             return a;
         }
@@ -47,27 +38,21 @@ public class Naloga3 {
             return new clenSeznama(this.dolzinaClena);
         }
 
-        public boolean dodajSeCeManjka() {
-            if ((((this.prviProstIndex) < this.dolzinaClena / 2)) && this.naslednji != null
-                    && this.naslednji.prviProstIndex != 0) {
-                this.arr[this.prviProstIndex] = this.naslednji.arr[0];
-                this.setPrviProstiIndex(1);
-
-                return true;
-            } else {
-                // sowy
-                return false;
-            }
-        }
-
         public clenSeznama(int n) {
             this.arr = new Integer[n];
             this.dolzinaClena = n;
             this.prviProstIndex = 0;
-            this.cezPolovico = false;
-            this.prejsni = null;
             this.naslednji = null;
             this.imamoProstor = true;
+        }
+
+        public void popraviIndex() {
+            int i = 0;
+            while (this.arr[i] != null) {
+                i++;
+            }
+            this.prviProstIndex = i;
+
         }
 
     }
@@ -102,26 +87,59 @@ public class Naloga3 {
         }
 
         public void init(int n) {
-            System.out.printf("init(%d)\n", n);
             clenSeznama novi = new clenSeznama(n);
-            novi.arr = new Integer[this.dolzinaClena];
-            this.stClenov++;
-            if (this.prvi == null) {
-                // System.out.println("pric");
-                this.prvi = novi;
-                this.zadnji = novi;
-            } else {
-                // System.out.println("hejaaa");
-                novi.naslednji = null;
-                this.zadnji.naslednji = novi;
-                novi.prejsni = this.zadnji;
-                this.zadnji = novi;
+            this.prvi = novi;
+            this.zadnji = novi;
+        }
+
+        // metoda, ki se m jo pred popravo naloge se rabu i guess je zdj tle sam za
+        // spomni d sm nrdu narobe enkrt
+        public void umakniPrazne() {
+
+            clenSeznama temp = this.prvi;
+
+            while (temp != null) {
+                boolean vseJeNull = true;
+                if (temp.naslednji != null) {
+                    clenSeznama next = temp.naslednji;
+                    for (int i = 0; i < next.arr.length; i++) {
+                        if (next.arr[i] != null) {
+                            vseJeNull = false;
+                            break;
+                        }
+                    }
+
+                    if (vseJeNull) {
+                        temp.naslednji = next.naslednji;
+                        next.naslednji = null;
+                    }
+                }
+
+                temp = temp.naslednji;
             }
 
         }
 
+        // vstavi clen notr heh simple
+
+        // ideja je s mi najprej se sprehodimo skozid clene ter pogledamo na kateremu
+        // clenu sploh moramo vstaciti to kar ustavimo
+        // ko pridemo do tega clena mamo neki moznosti zdj ce nemormo ustavit vrni false
+        // ok
+        // ce nimamo prostora in je pozicija enaka koncnemu indexu fora da ustavmio
+        // nakonci pole ubistvi ustauljamo v nasledji clen na prvo pozicijo
+        // nevem zkj nism tega pohendlu gori k se preimikamo sam pac dela tko i guess
+        // nerabim pole poravat ugl samo premaknemo naprej in updejtamo pozicijo
+
+        // ce je ta clen polno zaseden potem naredimo nov clen seznama naslednji je noci
+        // novi nasledji we pac samo povezemo pointerje
+        // in pole ga do polovicke celostevilksega delhenja skopriamo naprej ofkors kar
+        // premaknemo nadomestimo z null ter prosti index spreminjamo
+        // potem pa kr rekurzivno klicemo funkcijo s prvotno pozicijo kr why not itak bo
+        // hendalo zdj k mamo plac
+        // ce lohko usatavimo samo shiftamo use za ena ker fix nebo overflowwalo in
+        // potem dodamo na pravo mesto simple af
         public boolean insert(int vrednost, int pozicija) {
-            System.out.println("hej");
             clenSeznama temp = this.prvi;
             int prvotnaPozicija = pozicija;
             boolean lahkoVstavimo = false;
@@ -137,23 +155,20 @@ public class Naloga3 {
             }
 
             if (!lahkoVstavimo) {
-                System.out.println("nemoremo vstaviti");
                 return false;
             }
 
             if (!temp.imamoProstor && pozicija == temp.prviProstIndex) {
                 temp = temp.naslednji;
+                pozicija = 0;
             }
 
             if (!temp.imamoProstor) {
-                System.out.println("hej2");
 
                 clenSeznama naslednji = temp.naslednji;
                 clenSeznama noviObject = temp.vrniNovClen();
 
                 temp.naslednji = noviObject;
-                // naslednji.prejsni = noviObject;
-                // noviObject.prejsni = temp;
                 noviObject.naslednji = naslednji;
                 int j = 0;
                 for (int i = temp.dolzinaClena / 2; i < temp.dolzinaClena; i++) {
@@ -163,16 +178,15 @@ public class Naloga3 {
                     noviObject.setPrviProstiIndex(1);
                     j++;
                 }
-                System.out.println("hej3");
 
                 return this.insert(vrednost, prvotnaPozicija);
             } else {
-                System.out.println("hej4");
-
                 for (int i = temp.arr.length - 1; i > pozicija; i--) {
                     temp.arr[i] = temp.arr[i - 1];
                 }
+
                 temp.arr[pozicija] = vrednost;
+
                 temp.setPrviProstiIndex(1);
                 return true;
                 // mamo prostor delamo samo z enim arrayom shiftamo in prekanme in dodsamo
@@ -180,127 +194,77 @@ public class Naloga3 {
 
         }
 
-        // public boolean insert(int vrednost, int pozicija) {
-        // System.out.printf("insert(%d,%d)\n", vrednost, pozicija);
-        // // this.izpisiSeznamKonzola();
-        // clenSeznama temp = this.prvi;
-        // while (true) {
-        // // System.out.println("hi");
-        // // System.out.println(temp);
-        // // System.out.printf("vrednost:%d pozicija:%d\n", vrednost, pozicija);
-        // if (temp.imamoProstor) {
-        // if (temp.prviProstIndex == pozicija) {
-        // // System.out.println(temp.prviProstIndex + " HEHEHE");
-
-        // temp.arr[temp.prviProstIndex] = vrednost;
-        // temp.setPrviProstiIndex(1);
-        // return true;
-        // } else if (temp.prviProstIndex < pozicija) {
-        // pozicija = pozicija - temp.prviProstIndex;
-        // // System.out.println(temp.prviProstIndex);
-        // // System.out.println(pozicija);
-        // temp = temp.naslednji;
-        // if (temp == null) {
-        // return false;
-        // }
-        // } else {
-
-        // for (int i = temp.prviProstIndex; i > pozicija; i--) {
-        // // System.out.println(i + " HEHEHE");
-
-        // temp.arr[i] = temp.arr[i - 1];
-        // }
-        // temp.arr[pozicija] = vrednost;
-        // temp.setPrviProstiIndex(1);
-        // return true;
-        // }
-        // } else {
-        // if (temp.naslednji == null) {
-        // // System.out.println("we are here");
-        // if (temp.dolzinaClena < pozicija) {
-        // pozicija = pozicija - temp.dolzinaClena;
-        // // System.out.println(temp.prviProstIndex);
-        // // System.out.println(pozicija);
-        // temp = temp.naslednji;
-        // if (temp == null) {
-        // return false;
-        // }
-        // continue;
-        // }
-        // if (pozicija == temp.prviProstIndex) {
-        // this.init(this.dolzinaClena);
-        // clenSeznama next = temp.naslednji;
-        // next.arr[0] = vrednost;
-        // next.setPrviProstiIndex(1);
-        // return true;
-        // } else {
-        // this.init(this.dolzinaClena);
-        // clenSeznama next = temp.naslednji;
-        // next.arr[0] = temp.arr[temp.dolzinaClena - 1];
-        // next.setPrviProstiIndex(1);
-
-        // for (int i = temp.arr.length - 1; i > pozicija; i--) {
-        // // System.out.println(i + " HEHEHE");
-
-        // temp.arr[i] = temp.arr[i - 1];
-        // }
-        // System.out.println(pozicija + " HEHEHE");
-
-        // temp.arr[pozicija] = vrednost;
-        // this.izpisiSeznamKonzola();
-        // return true;
-        // }
-
-        // }
-        // temp = temp.naslednji;
-        // }
-
-        // }
-
-        // }
-
+        // pri remove ista pasta ni se premaknemo do pravega clena
+        // najprej sam use shiftamo pole zadnjio damo na null ce ni bla in to je to
+        // ko smo tm pogledamo situacijo ce bo po brisnju ratalo premajhno pole moramo
+        // pac use skopirat
+        // ce je stecilo res premajhno in nasledji clen nima nulll pole moramo prenesti
+        // clene iz naslednjega v sedanjai ter naslednjega enostavno izbrisati s
+        // kazalcki ampka to se zgodi le ce se lohko prenesejo usi elemtni
+        // 
+        //cene pa rpenesemo ssamo tolk stevilk da pac ima ta clen kjer smo odstranli n/2 notr d se ne sesede
         public boolean remove(int pozicija) {
+            // this.umakniPrazne();
             clenSeznama temp = this.prvi;
-            // this.izpisiSeznamKonzola();
-            System.out.printf("remove(%d)\n", pozicija);
+            int prvotnaPozicija = pozicija;
+            boolean lahkoBrisemo = false;
+            while (temp != null) {
 
-            while (true) {
+                if (pozicija >= temp.prviProstIndex) {
+                    pozicija -= temp.prviProstIndex;
+                } else {
+                    lahkoBrisemo = true;
+                    break;
+                }
+                temp = temp.naslednji;
+            }
 
-                if (temp.prviProstIndex > pozicija) {
+            if (!lahkoBrisemo) {
+                return false;
+            }
 
-                    for (int i = pozicija; i < temp.arr.length - 1; i++) {
+            for (int i = pozicija; i < temp.arr.length - 1; i++) {
+                temp.arr[i] = temp.arr[i + 1];
+            }
+            temp.arr[temp.arr.length - 1] = null;
+            temp.setPrviProstiIndex(-1);
+
+            if (temp.prviProstIndex < temp.dolzinaClena / 2) {
+
+                if (temp.naslednji != null && (temp.naslednji.prviProstIndex - 1) < temp.dolzinaClena / 2) {
+                    // System.out.print("hi");
+
+                    int j = 0;
+                    for (int i = temp.prviProstIndex; i < temp.dolzinaClena; i++) {
+                        temp.arr[i] = temp.naslednji.arr[j];
+                        j++;
+                    }
+
+                    temp.popraviIndex();
+
+                    temp.naslednji = temp.naslednji.naslednji;
+                    return true;
+                } else if (temp.naslednji != null) {
+                    System.out.print("HEJLA");
+                    temp.arr[temp.prviProstIndex] = temp.naslednji.arr[0];
+                    temp.setPrviProstiIndex(1);
+                    clenSeznama temp2 = temp;
+                    temp = temp.naslednji;
+
+                    for (int i = 0; i < temp.arr.length - 1; i++) {
                         temp.arr[i] = temp.arr[i + 1];
                     }
                     temp.arr[temp.arr.length - 1] = null;
                     temp.setPrviProstiIndex(-1);
-                    // System.out.println((temp.prviProstIndex) < temp.dolzinaClena / 2);
-                    // System.out.printf("stEl:%d n:%d n/2:%d\n", temp.prviProstIndex,
-                    // temp.dolzinaClena,
-                    // temp.dolzinaClena / 2);
-                    // this.izpisiSeznamKonzola();
-                    if (temp.dodajSeCeManjka()) {
 
-                        this.remove(pozicija + 1);
-                    }
-
-                    return true;
-
-                } else {
-                    // System.out.println("hi");
-                    pozicija -= temp.prviProstIndex;
-                    temp = temp.naslednji;
-                    continue;
                 }
-
             }
-
+            return true;
         }
 
+        //izpise seznam v datoteko na katero kaze p 
         public void izpisiSeznam(PrintWriter p) {
             clenSeznama temp = this.prvi;
-            // System.out.println(this.prvi);
-            // System.out.println("izpisijuemo seznam");
-            // System.out.println("###################");
             p.println(this.dolzina());
             while (temp != null) {
 
@@ -314,20 +278,17 @@ public class Naloga3 {
                         p.print(",");
                     }
                 }
+                // p.print(" " + temp.prviProstIndex);
                 p.println();
                 temp = temp.naslednji;
             }
             p.close();
-            // System.out.println("###################");
         }
 
+        //izpoise na konzolo ofkors samo za debuging
         public void izpisiSeznamKonzola() {
 
             clenSeznama temp = this.prvi;
-            // System.out.println(this.prvi);
-            // System.out.println("izpisijuemo seznam");
-            // System.out.println("###################");
-            // System.out.println();
             while (temp != null) {
 
                 for (int i = 0; i < this.dolzinaClena; i++) {
@@ -335,48 +296,30 @@ public class Naloga3 {
                         System.out.print("NULL");
                     } else {
                         System.out.print(temp.arr[i]);
+
                     }
                     if (i != this.dolzinaClena - 1) {
                         System.out.print(",");
                     }
                 }
+                System.out.print("...." + temp.prviProstIndex);
                 System.out.println();
                 temp = temp.naslednji;
             }
             System.out.println();
 
-            // System.out.println("###################");
         }
-
     }
 
     public static void main(String[] args) {
         Naloga3 zunajiNaloga3 = new Naloga3();
         String vrstica;
-        int stUkazov;
+        int stUkazov; // nerabomo ker beremo do konca
         char ukaz;
         String[] argumenti;
         int arg1;
         int arg2;
         Seznam sez;
-        // sez.init(5);
-        // // System.out.println(sez.prvi);
-        // // System.out.println(sez.zadnji);
-        // sez.insert(7, 0);
-        // sez.izpisiSeznam();
-        // sez.insert(3, 1);
-        // sez.izpisiSeznam();
-        // sez.insert(4, 0);
-        // sez.izpisiSeznam();
-        // sez.insert(2, 3);
-        // sez.izpisiSeznam();
-        // sez.insert(1, 4);
-        // sez.izpisiSeznam();
-        // sez.insert(5, 3);
-        // sez.izpisiSeznam();
-        // sez.insert(8, 2);
-        // sez.izpisiSeznam();
-
         try {
             BufferedReader read = new BufferedReader(new FileReader(args[0]));
             PrintWriter p = new PrintWriter(new FileWriter(args[1]));
@@ -387,50 +330,42 @@ public class Naloga3 {
             argumenti = vrstica.split(",");
             arg1 = Integer.parseInt(argumenti[1]);
             sez = zunajiNaloga3.new Seznam(arg1);
-            // sez = zunajiNaloga3.new Seznam(5);
             sez.init(arg1);
             while ((vrstica = read.readLine()) != null) {
-                // System.out.println(vrstica);
+
                 ukaz = vrstica.charAt(0);
-                // System.out.println("ukaz: " + ukaz);
-
+                //switch ker za usak ukaz je druga crka in usak ukaz ma mal drgac te cifre k jim mormo parsat 
                 switch (ukaz) {
-                case 'i':
-                    argumenti = vrstica.split(",");
+                    case 'i':
+                        argumenti = vrstica.split(",");
 
-                    arg1 = Integer.parseInt(argumenti[1]);
-                    arg2 = Integer.parseInt(argumenti[2]);
-                    sez.insert(arg1, arg2);
-                    sez.izpisiSeznamKonzola();
-                    break;
-                case 'r':
-                    argumenti = vrstica.split(",");
+                        arg1 = Integer.parseInt(argumenti[1]);
+                        arg2 = Integer.parseInt(argumenti[2]);
+                        sez.insert(arg1, arg2);
 
-                    arg1 = Integer.parseInt(argumenti[1]);
-                    sez.remove(arg1);
-                    sez.izpisiSeznamKonzola();
+                        break;
+                    case 'r':
 
-                    break;
-                case 's':
-                    sez = zunajiNaloga3.new Seznam(5);
+                        argumenti = vrstica.split(",");
+                        arg1 = Integer.parseInt(argumenti[1]);
+                        sez.remove(arg1);
 
-                    argumenti = vrstica.split(",");
-                    arg1 = Integer.parseInt(argumenti[1]);
-                    sez.init(arg1);
-                    sez.izpisiSeznamKonzola();
+                        break;
+                    case 's':
+                        sez = zunajiNaloga3.new Seznam(5);
+                        argumenti = vrstica.split(",");
+                        arg1 = Integer.parseInt(argumenti[1]);
+                        sez.init(arg1);
 
-                    break;
-
-                default:
-                    break;
+                        break;
+                    default:
+                        break;
                 }
+
             }
             sez.izpisiSeznam(p);
-            System.out.println(sez.dolzina());
-            // System.out.println("kkoncali brat list");
         } catch (Exception e) {
             System.err.println(e);
         }
-
     }
 }

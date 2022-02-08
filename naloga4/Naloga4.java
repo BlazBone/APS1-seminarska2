@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.Arrays;
 
 public class Naloga4 {
 
@@ -70,7 +69,12 @@ public class Naloga4 {
                     rear = null;
             }
         }
+        // zgori so pac basic funkcije ki so bile ze obdelane pri vajah
 
+
+
+        //funckija natisne quee v podano datoteko
+        // v nasem primeru je to queue kjer so ostrizene stranke (v staticnem se jih ni splacalo met i mean lohko bi samo pac lohko tud to
         public void natisniVDatoteko(PrintWriter p) {
             QueueElement temp = this.front;
 
@@ -87,41 +91,39 @@ public class Naloga4 {
 
         }
 
-        public void natisniVrsto() {
-            QueueElement temp = this.front;
-            System.out.print("VRSTA: ");
-            while (temp != null) {
-                System.out.print(((Stranka) temp.element).id);
-                System.out.print(" ");
-                temp = temp.next;
-            }
-            if (!this.empty()) {
-                System.out.print(" front: " + ((Stranka) front.element).id);
-                System.out.print(" rear: " + ((Stranka) rear.element).id);
-            }
+        //koda ki pride prow sam za debug
+        // public void natisniVrsto() {
+        //     QueueElement temp = this.front;
+        //     System.out.print("VRSTA: ");
+        //     while (temp != null) {
+        //         System.out.print(((Stranka) temp.element).id);
+        //         System.out.print(" ");
+        //         temp = temp.next;
+        //     }
+        //     if (!this.empty()) {
+        //         System.out.print(" front: " + ((Stranka) front.element).id);
+        //         System.out.print(" rear: " + ((Stranka) rear.element).id);
+        //     }
 
-            System.out.println();
-        }
+        //     System.out.println();
+        // }
 
+
+        //funkcija ki umakne vse strnkae ki nemorejo vec cakatai 
+        //umakne use stranke ki niso sposobne cakati naprej od podanega casa
         public void umakniDo(int cas) {
-            // this.natisniVrsto();
+
             if (this.empty()) {
                 return;
             } else if (this.stClenov == 1) {
-                // System.out.println("SAMO EN CLEN POGLEJ CE JE PROW");
                 if (((Stranka) (front.element)).cakaDo <= cas) {
-                    // System.out.printf(" Stranka %d je odlsa zaradni poterplenja.\n", ((Stranka)
-                    // (front.element)).id);
 
                     this.dequeue();
                 }
             } else {
                 QueueElement temp = front;
                 while (temp.next != null) {
-                    // System.out.print("|||| |||" + ((Stranka) (temp.next.element)).id);
                     if (((Stranka) (temp.next.element)).cakaDo <= cas) {
-                        // System.out.printf(" Stranka %d je odlsa zaradni poterplenja.\n",((Stranka)
-                        // (temp.next.element)).id);
                         if (temp.next == this.rear) {
                             this.rear = temp;
                         }
@@ -135,9 +137,6 @@ public class Naloga4 {
                 }
 
                 if (((Stranka) (front.element)).cakaDo <= cas) {
-                    // System.out.printf(" Stranka %d je odlsa zaradni poterplenja.\n", ((Stranka)
-                    // (front.element)).id);
-
                     this.dequeue();
                 }
 
@@ -145,6 +144,7 @@ public class Naloga4 {
         }
     }
 
+    //stranka samo zato da mamo njene podatke lepsi lahko bi imeli simple int[2]
     public static class Stranka {
         private int id;
         private int cakaDo;
@@ -168,6 +168,8 @@ public class Naloga4 {
         PrintWriter p = new PrintWriter(new FileWriter(args[1]));
         String vrstica;
         int i = 0;
+
+        //ker so inputi vedno enaki naredimo pac za vsako vrstico da obdela drugace.
         while ((vrstica = read.readLine()) != null) {
             switch (i) {
             case 0:
@@ -186,6 +188,7 @@ public class Naloga4 {
 
                 break;
             case 4:
+            //naredi string ki ima notr elemnte stevilke ampak so stringi  potem te stringe parsamo v inte in jih damo v tabelo
                 String[] items = vrstica.replaceAll("\\s", "").split(",");
                 zamikiPrihodovStrank = new int[items.length];
                 for (int j = 0; j < items.length; j++) {
@@ -195,6 +198,7 @@ public class Naloga4 {
                 }
                 break;
             case 5:
+            //podobno kot gori ker je isti princip
                 String[] items2 = vrstica.replaceAll("\\s", "").split(",");
                 potrpljenjeStrank = new int[items2.length];
                 for (int j = 0; j < items2.length; j++) {
@@ -210,14 +214,7 @@ public class Naloga4 {
             i++;
         }
 
-        // System.out.println(stKorakovSimulacije);
-        // System.out.println(stStolovVCakalnici);
-        // System.out.println(trajanjeStrizenja);
-        // System.out.println(podalnjasnjeStrizenja);
-        // System.out.println(Arrays.toString(zamikiPrihodovStrank));
-        // System.out.println(Arrays.toString(potrpljenjeStrank));
-
-        Queue cakalnaVrsta = new Queue(stStolovVCakalnici);
+        Queue cakalnaVrsta = new Queue(stStolovVCakalnici);// cakalna
         Queue ostrizeni = new Queue(stKorakovSimulacije);
         boolean stolJeProst = true;
         int idStranke = 0;
@@ -226,20 +223,13 @@ public class Naloga4 {
         int casovnaPerioda = 1;
         int casZaNovoStranko = zamikiPrihodovStrank[0];
         while (casovnaPerioda <= stKorakovSimulacije) {
-            // System.out.printf("Korak %d:\n", casovnaPerioda);
-            // cakalnaVrsta.natisniVrsto();
-            // ce se je stranka strizgla in se konca potem stranka gre od salona strizenje
-            // se podaljsa
+           //samo sledimo napisanim navodilom v nalogi in postopoma pisemo korake
+
+
+           //ce stol ni prost kar pomeni da se nekdo strize in se njen cas cakado potece potem je ta ostrizena jo damo v vrsto ostrizenih in jo vrzemo iz stola stopl postane prost  ter podaljsamo dolzino strizenja
+
             if (!stolJeProst) {
-                // trenutnaStranka;
-                // System.out.println(casovnaPerioda);
                 if (trenutnaStranka.cakaDo == casovnaPerioda) {
-                    // System.out.println("STRANKA SE JE OSTRIGLA ID: " + trenutnaStranka.id);
-                    // System.out.print(trenutnaStranka.id);
-                    // System.out.print(",");
-                    // System.out.printf(" Stranka %d je postrizena.\n", trenutnaStranka.id);
-                    // p.print(trenutnaStranka.id);
-                    // p.print(",");
                     ostrizeni.enqueue(trenutnaStranka.id);
                     trenutnaStranka = null;
                     dolzinaStrizenja += podalnjasnjeStrizenja;
@@ -247,64 +237,42 @@ public class Naloga4 {
 
                 }
             }
-            // ce je frizerski salon zdj prazn posedemo novo stranko na frizerski stol iz
-            // cakalne vrste
+            // ce je stol prost in vrsta ni prazna potem dodamo stranko na stol kar pomeni da jo odstranimo iz vrste ter ji spremenimo cakado na cas strizena
+            // also stol pppotem nivec prost
             if (stolJeProst) {
                 if (!(cakalnaVrsta.empty())) {
-                    // System.out.println("hejla " + casovnaPerioda);
                     trenutnaStranka = (Stranka) cakalnaVrsta.front();
                     cakalnaVrsta.dequeue();
                     trenutnaStranka.cakaDo = casovnaPerioda + dolzinaStrizenja;
-                    // System.out.printf(" Stranka %d gre iz cakalne na stol.\n",
-                    // trenutnaStranka.id);
 
                     stolJeProst = false;
                 }
             }
-            // sprehodi se skozi queue in pogelj ce kdo predolgo caka in ga vrzi vn iz vrste
 
+            //usako periodo pogledamo kolkoo je takih ki so v vrsti in jim je mal dosadilo in pole leavnejo to pohendla funkcija
             cakalnaVrsta.umakniDo(casovnaPerioda);
 
-            // ce nastopi cas za prihod nove stranke potem jo zgenerirramo(pravilen id ter
-            // ostale lastnosti), ter se ta usede na stol ce je prazen na ckaalnico ce imamo
-            // prostor in cene pa gre domow
+
+
+            //ce v tej periodi pride nova stranka potem jo to naredimo in ce je stol prost se ta kar usede ter je stol zaseden ce pa stol ni prost potem jo damo v vrsto le ce je v vrsti cse prostor ce ga ni ptem lahko enostavno pozabimo na stranko
+            //nesmemo pozabiti da id strake vedno prostejemo ter nastavimo nov cas za novostranko 
             if (casovnaPerioda == casZaNovoStranko) {
-                // System.out.println("Prihod stranke " + (idStranke + 1) + " ob :" +
-                // casovnaPerioda);
-                // int[] novaStranka = {idStranke+1,casovnaPerioda +
-                // potrpljenjeStrank[idStranke%potrpljenjeStrank.length]};
                 Stranka novaStranka = new Stranka(idStranke + 1,
                         casovnaPerioda + potrpljenjeStrank[idStranke % potrpljenjeStrank.length]);
-                // smo kreirali novo stranko
-                // System.out.printf(" Stranka %d je prisla.\n", novaStranka.id);
 
                 if (stolJeProst) {
 
                     novaStranka.cakaDo = casovnaPerioda + dolzinaStrizenja;
                     trenutnaStranka = novaStranka;
                     stolJeProst = false;
-                    // System.out.printf(" Stranka %d gre takoj na stol.\n", trenutnaStranka.id);
-
-                    // moramo povecati dolzino strizenja
-
-                    // System.out.println("Stranka se je usedla na stol " + trenutnaStranka.id + "
-                    // CAka do "
-                    // + trenutnaStranka.cakaDo);
                 } else if (cakalnaVrsta.stClenov < stStolovVCakalnici) {
-                    // cakalnica
                     cakalnaVrsta.enqueue(novaStranka);
-                    // System.out.printf(" Stranka %d je sla v cakalno vrsto.\n", novaStranka.id);
-
-                    // System.out.println("dodamo v cakalnico");
                 } else {
-                    // System.out.printf(" Stranka %d je odsla, ni vec placa.\n", novaStranka.id);
-
-                    // stol ni prost in cakalnica tudi ne potem s stranko ne naridemo nicesar, saj
-                    // bo ta odsla
                 }
                 idStranke++;
                 casZaNovoStranko += zamikiPrihodovStrank[idStranke % zamikiPrihodovStrank.length];
             }
+            //vsak obhod povecamo casovno periodo
             casovnaPerioda++;
         }
         ostrizeni.natisniVDatoteko(p);
